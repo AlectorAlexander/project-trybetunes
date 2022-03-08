@@ -8,7 +8,8 @@ import ProfileEdit from './pages/profileEdit';
 import Seach from './pages/search';
 import NotFound from './pages/NotFound';
 import Loading from './pages/loading';
-import { createUser, getUser } from './services/userAPI';
+import { createUser } from './services/userAPI';
+import Header from './components/Header';
 
 class App extends React.Component {
   constructor() {
@@ -21,15 +22,11 @@ class App extends React.Component {
     };
   }
 
-  saveUser = () => {
+  saveUser = async () => {
+    this.setState({ loading: true });
     const { name } = this.state;
-    createUser({ name });
-    this.setState({ loading: true }, this.validateUser);
-  }
-
-  validateUser = async () => {
-    const { name } = await getUser();
-    if (name !== '') { this.setState({ loading: false, logado: true }); }
+    await createUser({ name });
+    this.setState({ logado: true, loading: false });
   }
 
   textLength = ({ target }) => {
@@ -42,8 +39,9 @@ class App extends React.Component {
     const { loading, name, logado } = this.state;
     return (
       <div>
+        <Header />
         <Switch>
-          {loading && <Route path="/" component={ Loading } />}
+          {loading && <Loading />}
           <Route path="/" exact>
             {logado ? <Redirect to="/search" /> : <Login
               onChange={ this.textLength }

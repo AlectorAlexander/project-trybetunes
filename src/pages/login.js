@@ -33,7 +33,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  onClick: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
 };

@@ -5,7 +5,7 @@ class Login extends Component {
   render() {
     const { onClick, disabled, onChange } = this.props;
     return (
-      <div data-testid="page-login">
+      <form data-testid="page-login">
         <p>Login</p>
         <label htmlFor="name">
           <span>
@@ -27,7 +27,7 @@ class Login extends Component {
         >
           Entrar
         </button>
-      </div>
+      </form>
     );
   }
 }

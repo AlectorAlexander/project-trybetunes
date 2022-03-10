@@ -16,6 +16,10 @@ class Seach extends Component {
     };
   }
 
+  componentDidMount() {
+  //  this.setState({ searchClick: false, artistsObject: [] });
+  }
+
   searchBand = async () => {
     this.setState({ searchClick: true, loading: true });
     const { value } = this.state;
@@ -34,6 +38,9 @@ class Seach extends Component {
 
   render() {
     const { value, search, loading, searchClick, nameArtist, artistsObject } = this.state;
+    const ultimateAnswer = artistsObject.length === 0 && searchClick
+      ? (<p>Nenhum álbum foi encontrado</p>)
+      : '';
     return (
       <div data-testid="page-search">
         {loading ? <Loading />
@@ -82,7 +89,7 @@ class Seach extends Component {
                   </>
                 ))}
               </div>
-            </div>) : artistsObject.length === 0 && (<p>Nenhum álbum foi encontrado</p>) }
+            </div>) : ultimateAnswer}
       </div>
     );
   }

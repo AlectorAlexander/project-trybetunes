@@ -38,8 +38,9 @@ class Seach extends Component {
 
   render() {
     const { value, search, loading, searchClick, nameArtist, artistsObject } = this.state;
+    const loadSearch = loading ? <p>Loading...</p> : (<p>Nenhum álbum foi encontrado</p>);
     const ultimateAnswer = artistsObject.length === 0 && searchClick
-      ? (<p>Nenhum álbum foi encontrado</p>)
+      ? loadSearch
       : '';
     return (
       <div data-testid="page-search">

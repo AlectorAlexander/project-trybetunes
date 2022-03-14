@@ -1,7 +1,7 @@
 import propTypes from 'prop-types';
 import React, { Component } from 'react';
 import MusicCard from '../components/MusicCard';
-import { addSong, removeSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 import getMusics from '../services/musicsAPI';
 import Loading from './loading';
 
@@ -18,37 +18,42 @@ class Album extends Component {
     };
   }
 
-  componentDidMount() {
-    this.manListen();
+  async componentDidMount() {
+    await this.manListen();
+  }
+
+  manListenFavorites = async () => {
+    await getFavoriteSongs()
+      .then((stuf) => this.setState({ checkeds: stuf, loading: false }));
   }
 
   favorites = async ({ target }) => {
     this.setState({ loading: true });
     const { value } = target;
-    const { checked } = target;
     const { checkeds } = this.state;
-    const { name } = target;
-    checkeds[name] = { checked };
+    const { checked } = target;
     if (checked) {
       await addSong(value);
-      this.setState({ checkeds });
+      this.setState((prvStt) => ({
+        checkeds: [...prvStt.checkeds, value],
+        loading: false,
+      }));
     }
     if (!checked) {
       await removeSong(value);
-      this.setState({ checkeds });
+      const newChecks = checkeds.filter((check) => check !== value);
+      await newChecks.map((check) => addSong(check));
+      this.setState({ checkeds: newChecks }, this.setState({ loading: false }));
     }
-    this.setState({ loading: false });
   }
 
 manListen = async () => {
-  const { match } = this.props;
-  const { params } = match;
-  const { id } = params;
+  const { match: { params: { id } } } = this.props;
   const musicsObj = await getMusics(id);
-  const checkeds = musicsObj.map(() => ({ checked: false }));
   const { artistName } = await musicsObj[0];
   const { collectionName } = await musicsObj[0];
-  this.setState({ loading: false, musicsObj, artistName, collectionName, checkeds });
+  this.setState({ musicsObj, artistName, collectionName }, 
+    await this.manListenFavorites());
 }
 
 render() {
@@ -63,12 +68,12 @@ render() {
             {musicsObj.map((obj, i) => i > 0 && (
               <li key={ i }>
                 <MusicCard
+                  checked={ checkeds.find((el) => parseInt(el, 10) === obj.trackId) }
                   trackName={ obj.trackName }
                   key={ obj.trackName }
                   previewUrl={ obj.previewUrl }
                   trackId={ obj.trackId }
                   onchange={ this.favorites }
-                  checked={ checkeds[i].checked }
                   name={ i }
                 />
               </li>))}
@@ -80,7 +85,6 @@ render() {
 }
 
 Album.propTypes = {
-  match: propTypes.string.isRequired,
 };
 
 Album.defaultProps = {

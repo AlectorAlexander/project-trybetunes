@@ -13,13 +13,13 @@ class MusicCard extends Component {
           <code>audio</code>
           .
         </audio>
-        <label htmlFor="Favorita">
+        <label htmlFor={ trackId }>
           <span>
             Favorita
           </span>
           <input
             type="checkbox"
-            id="Favorita"
+            id={ trackId }
             data-testid={ `checkbox-music-${trackId}` }
             value={ trackId }
             onChange={ onchange }
@@ -38,7 +38,7 @@ MusicCard.propTypes = {
   trackName: propTypes.string.isRequired,
   name: propTypes.string.isRequired,
   onchange: propTypes.func.isRequired,
-  checked: propTypes.bool.isRequired,
+  checked: propTypes.func.isRequired,
 };
 
 export default MusicCard;

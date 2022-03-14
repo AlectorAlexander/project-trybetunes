@@ -52,7 +52,7 @@ manListen = async () => {
   const musicsObj = await getMusics(id);
   const { artistName } = await musicsObj[0];
   const { collectionName } = await musicsObj[0];
-  this.setState({ musicsObj, artistName, collectionName }, 
+  this.setState({ musicsObj, artistName, collectionName },
     await this.manListenFavorites());
 }
 
@@ -85,6 +85,7 @@ render() {
 }
 
 Album.propTypes = {
+  match: propTypes.string.isRequired,
 };
 
 Album.defaultProps = {
